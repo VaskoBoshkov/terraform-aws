@@ -47,13 +47,13 @@ module "loadbalancing" {
 
 module "compute" {
   source              = "./compute"
-  instance_count      = 3
+  instance_count      = 1
   instance_type       = "t3.micro"
   public_sg           = module.networking.public_sg
   public_subnets      = module.networking.public_subnets
   vol_size            = 10
   key_name            = "id_rsa"
-  public_key_path     = "C:/Users/vboshkov/.ssh/id_rsa.pub" // path for the ssh-key...
+  public_key_path     = "C:/Users/vboshkov/.ssh/id_rsa.pub"
   user_data_path      = "${path.root}/userdata.tpl"
   dbuser              = var.dbuser
   dbname              = var.dbname
