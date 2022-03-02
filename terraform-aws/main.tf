@@ -48,17 +48,12 @@ module "loadbalancing" {
 module "compute" {
   source              = "./compute"
   instance_count      = 1
-  instance_type       = "t3.micro"
+  instance_type       = "t2.micro"
   public_sg           = module.networking.public_sg
   public_subnets      = module.networking.public_subnets
   vol_size            = 10
   key_name            = "id_rsa"
   public_key_path     = "C:/Users/vboshkov/.ssh/id_rsa.pub"
-  user_data_path      = "${path.root}/userdata.tpl"
-  dbuser              = var.dbuser
-  dbname              = var.dbname
-  dbpassword          = var.dbpassword
-  db_endpoint         = module.database.db_endpoint
   lb_target_group_arn = module.loadbalancing.lb_target_group_arn
   tg_port             = 8000
 

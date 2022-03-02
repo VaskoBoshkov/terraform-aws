@@ -12,8 +12,10 @@ resource "aws_lb_target_group" "dev_tg" {
   port     = var.tg_port     # 80 
   protocol = var.tg_protocol # HTTP
   vpc_id   = var.vpc_id
-  # ignore_changes se poradi toa sto imeto se menuva postojano na target grupata, create_before_destroy e poradi toa shto mora
-  # da se kreira prvo target grupata bidejki listenerot se atachira na target grupata
+  # ignore_changes se poradi toa sto imeto se menuva postojano na target grupata, 
+  #create_before_destroy e poradi toa shto mora
+  # da se kreira prvo target grupata bidejki listenerot se atachira na 
+  #target grupata
   lifecycle {
     ignore_changes        = [name]
     create_before_destroy = true

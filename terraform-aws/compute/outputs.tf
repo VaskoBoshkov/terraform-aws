@@ -1,7 +1,7 @@
 # ---compute/outputs.tf ---
 
 output "instance" {
-  value     = aws_instance.dev_node[*]
+  value     = aws_instance.dev_instance[*]
   sensitive = true
 }
 

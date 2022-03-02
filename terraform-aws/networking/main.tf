@@ -9,7 +9,7 @@ resource "random_integer" "random" {
 
 resource "random_shuffle" "az_list" {
   input        = data.aws_availability_zones.available.names
-  result_count = var.max_subnets
+  result_count = var.max_subnets // kombinacii so povtoruvanje
 }
 
 resource "aws_vpc" "dev_vpc" {
@@ -23,19 +23,23 @@ resource "aws_vpc" "dev_vpc" {
 }
 
 resource "aws_subnet" "dev_public_subnet" {
-  count                   = var.public_sn_count
-  vpc_id                  = aws_vpc.dev_vpc.id
-  cidr_block              = var.public_cidrs[count.index] // na prvata iteracija - 10.123.2.0/24, na vtorata iteracija 10.123.4.0/24
+  count  = var.public_sn_count
+  vpc_id = aws_vpc.dev_vpc.id
+  #na prvata iteracija-10.123.2.0/24, na vtorata iteracija 10.123.4.0/24
+  cidr_block              = var.public_cidrs[count.index]
   map_public_ip_on_launch = true
-  # availability_zone = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"][count.index]
+  # availability_zone = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" "us-east-1e", "us-east-1f"][count.index]
   # availability_zone = data.aws_availability_zones.available.names[count.index]
   availability_zone = random_shuffle.az_list.result[count.index]
 
   tags = {
     Name = "dev_public_${count.index + 1}"
   }
+  #internet gateway e updatiran so novoto vpc, 
+  #sho ne postoe, pa poradi toa nema da se unishte vpc-to, 
+  #i poradi toa lifecycle
   lifecycle {
-    create_before_destroy = true // internet gateway e updatiran so novoto vpc, sho ne postoe, pa poradi toa nema da se unishte vpc-to, i poradi toa lifecycle
+    create_before_destroy = true
   }
 }
 
@@ -119,6 +123,7 @@ resource "aws_security_group" "dev_sg" {
 
   dynamic "ingress" {
     for_each = each.value.ingress
+    #iterator = 
     content {
       from_port   = ingress.value.from
       to_port     = ingress.value.to
