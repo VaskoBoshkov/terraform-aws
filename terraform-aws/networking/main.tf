@@ -8,8 +8,9 @@ resource "random_integer" "random" {
 }
 
 resource "random_shuffle" "az_list" {
+  // random permutacii so povtoruvanje
   input        = data.aws_availability_zones.available.names
-  result_count = var.max_subnets // kombinacii so povtoruvanje
+  result_count = var.max_subnets
 }
 
 resource "aws_vpc" "dev_vpc" {
@@ -18,7 +19,13 @@ resource "aws_vpc" "dev_vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "dev_vpc-${random_integer.random.id}"
+    Name = "dev_vpc-${random_integer.random.id}" // na primer dev_vpc-89; dev_vpc-23
+  }
+  #internet gateway e updatiran in place so novoto vpc, 
+  #sho ne postoe, pa poradi toa nema da se unishte vpc-to, 
+  #i poradi toa lifecycle
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -35,16 +42,11 @@ resource "aws_subnet" "dev_public_subnet" {
   tags = {
     Name = "dev_public_${count.index + 1}"
   }
-  #internet gateway e updatiran so novoto vpc, 
-  #sho ne postoe, pa poradi toa nema da se unishte vpc-to, 
-  #i poradi toa lifecycle
-  lifecycle {
-    create_before_destroy = true
-  }
+
 }
 
 resource "aws_route_table_association" "dev_public_assoc" {
-  count          = var.public_sn_count
+  count          = var.public_sn_count // sekoj public subnet so deb_public_rt route tabelata
   subnet_id      = aws_subnet.dev_public_subnet.*.id[count.index]
   route_table_id = aws_route_table.dev_public_rt.id
 }
