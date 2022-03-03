@@ -3,7 +3,6 @@
 module "networking" {
   source           = "./networking"
   vpc_cidr         = local.vpc_cidr
-  access_ip        = var.access_ip
   security_groups  = local.security_groups
   public_sn_count  = 2
   private_sn_count = 3
@@ -15,20 +14,19 @@ module "networking" {
   db_subnet_group = true
 }
 
-module "database" {
-  source                 = "./database"
-  db_storage             = 10
-  db_engine_version      = "5.7.22"
-  db_instance_class      = "db.t3.micro"
-  dbname                 = var.dbname
-  dbuser                 = var.dbuser
-  dbpassword             = var.dbpassword
-  db_identifier          = "dev-db"
-  skip_db_snapshot       = true
-  db_subnet_group_name   = module.networking.db_subnet_group_name[0]
-  vpc_security_group_ids = module.networking.db_security_group
-
-}
+# module "database" {
+#   source                 = "./database"
+#   db_storage             = 10
+#   db_engine_version      = "5.7.22"
+#   db_instance_class      = "db.t3.micro"
+#   dbname                 = var.dbname
+#   dbuser                 = var.dbuser
+#   dbpassword             = var.dbpassword
+#   db_identifier          = "dev-db"
+#   skip_db_snapshot       = true
+#   db_subnet_group_name   = module.networking.db_subnet_group_name[0]
+#   vpc_security_group_ids = module.networking.db_security_group
+# }
 
 module "loadbalancing" {
   source                 = "./loadbalancing"
@@ -55,6 +53,6 @@ module "compute" {
   key_name            = "id_rsa"
   public_key_path     = "C:/Users/vboshkov/.ssh/id_rsa.pub"
   lb_target_group_arn = module.loadbalancing.lb_target_group_arn
-  tg_port             = 8000
-
+  tg_port             = 80
+  user_data_path      = "${path.root}/userdata.tpl"
 }

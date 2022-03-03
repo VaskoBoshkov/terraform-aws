@@ -124,6 +124,7 @@ resource "aws_security_group" "dev_sg" {
   description = each.value.description
   vpc_id      = aws_vpc.dev_vpc.id
 
+  // dynamic-bidejki moze da bidat povekje ingress rule-ovi
   dynamic "ingress" {
     for_each = each.value.ingress
     #iterator = 

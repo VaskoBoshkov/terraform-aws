@@ -9,4 +9,6 @@ variable "key_name" {}
 variable "public_key_path" {}
 variable "lb_target_group_arn" {}
 variable "tg_port" {}
+variable "user_data_path" {}
+
 
