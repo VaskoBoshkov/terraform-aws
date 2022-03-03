@@ -21,6 +21,7 @@ resource "aws_vpc" "dev_vpc" {
   tags = {
     Name = "dev_vpc-${random_integer.random.id}" // na primer dev_vpc-89; dev_vpc-23
   }
+  # ako go smenime cidr_range-ot, 
   #internet gateway e updatiran in place so novoto vpc, 
   #sho ne postoe, pa poradi toa nema da se unishte vpc-to, 
   #i poradi toa lifecycle
